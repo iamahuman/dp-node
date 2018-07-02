@@ -21,6 +21,10 @@ const express = require('express');
 |         redirectNakedToWWW: Boolean or Object, Whether redirect naked domain to www or not, Default is false.
 |         databaseDsn: [Object], Pre-defined database dsn key as `key`, Default is empty.
 |         mode: String, Supported values are `web` or `job`, Default is `web`.
+|         cache: {
+|             driver: String, ENUM('redis'), Session Driver, Default is undefined, disabled.
+|             connection: Object, Options for Driver, Default is empty object({}).
+|         }
 |         session: {
 |             driver: String, ENUM('redis'), Session Driver, Default is undefined, disabled.
 |             secret: String, Session Secret, Default is dp provided value.
@@ -110,6 +114,10 @@ module.exports = (options) => {
 
   if (defaultVal(options.cookieEnabled, true)) {
     app.use(require('cookie-parser')());
+  }
+
+  if (defaultVal(options.cache, {})) {
+    config.cfg.cache = options.cache || {};
   }
 
   if (defaultVal(options.session, {})) {
